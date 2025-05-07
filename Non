@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Educational Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Basic reset */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        /* Calculator container */
+        .calculator {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 360px;
+            width: 100%;
+        }
+        /* Display */
+        .display {
+            background: #222;
+            color: #fff;
+            font-size: 2em;
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            min-height: 1.2em;
+        }
+        /* Button rows */
+        .buttons .row {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .buttons .row:last-child {
+            margin-bottom: 0;
+        }
+        .buttons button {
+            flex: 1;
+            padding: 15px;
+            margin-right: 5px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background: #e0e0e0;
+            color: #333;
+            cursor: pointer;
+        }
+        .buttons button:last-child {
+            margin-right: 0;
+        }
+        /* Operation buttons */
+        .buttons .row button.operator {
+            background: #f0ad4e;
+            color: white;
+        }
+        /* Clear button */
+        .buttons .row button.clear {
+            background: #d9534f;
+            color: white;
+        }
+        /* Hidden/disguised link buttons */
+        .buttons .row button.disguised {
+            background: #5bc0de;
+            color: white;
+        }
+        /* Responsive design */
+        @media (max-width: 400px) {
+            .display {
+                font-size: 1.5em;
+                padding: 8px;
+            }
+            .buttons button {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+            .calculator {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div id="display" class="display">0</div>
+        <div class="buttons">
+            <div class="row">
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="setOperation('/')">÷</button>
+            </div>
+            <div class="row">
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="setOperation('*')">×</button>
+            </div>
+            <div class="row">
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button class="operator" onclick="setOperation('-')">−</button>
+            </div>
+            <div class="row">
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendDot()">.</button>
+                <button onclick="calculateResult()">=</button>
+                <button class="operator" onclick="setOperation('+')">+</button>
+            </div>
+            <div class="row">
+                <button class="clear" onclick="clearDisplay()">C</button>
+                <!-- Disguised game launchers: styled as normal buttons -->
+                <button class="disguised" onclick="window.open('https://www.xbox.com/en-us/play/games/minecraft-dungeons/9n8nj74fztg9', '_blank')">Scientific Tools</button>
+                <button class="disguised" onclick="window.open('https://www.xbox.com/en-us/play/games/fortnite/bt5p2x999vh2', '_blank')">Equation Solver</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let firstOperand = null;
+        let operation = null;
+        let shouldResetDisplay = false;
+        
+        function appendNumber(num) {
+            const display = document.getElementById('display');
+            if (shouldResetDisplay) {
+                display.innerText = '';
+                shouldResetDisplay = false;
+            }
+            if (num === '.' && display.innerText.includes('.')) return;
+            if (display.innerText === '0' && num !== '.') {
+                display.innerText = num;
+            } else {
+                display.innerText += num;
+            }
+        }
+        
+        function appendDot() {
+            const display = document.getElementById('display');
+            if (shouldResetDisplay) {
+                display.innerText = '0';
+                shouldResetDisplay = false;
+            }
+            if (!display.innerText.includes('.')) {
+                display.innerText += '.';
+            }
+        }
+        
+        function setOperation(op) {
+            firstOperand = parseFloat(document.getElementById('display').innerText);
+            operation = op;
+            shouldResetDisplay = true;
+        }
+        
+        function calculateResult() {
+            const display = document.getElementById('display');
+            const secondOperand = parseFloat(display.innerText);
+            let result = secondOperand;
+            if (operation === '+') {
+                result = firstOperand + secondOperand;
+            } else if (operation === '-') {
+                result = firstOperand - secondOperand;
+            } else if (operation === '*') {
+                result = firstOperand * secondOperand;
+            } else if (operation === '/') {
+                result = secondOperand !== 0 ? (firstOperand / secondOperand) : 'Error';
+            }
+            display.innerText = result;
+            shouldResetDisplay = true;
+        }
+        
+        function clearDisplay() {
+            document.getElementById('display').innerText = '0';
+            firstOperand = null;
+            operation = null;
+        }
+    </script>
+</body>
+</html>
